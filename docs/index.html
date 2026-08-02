@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>멜론 차트 기록</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <main class="container">
+        <h1 id="song-title">멜론 차트 기록</h1>
+        <div id="artist" class="artist"></div>
+
+        <div class="view-toggle" aria-label="화면 표시 방식">
+            <button type="button" id="card-view-button" class="view-toggle-button active">
+                카드로 보기
+            </button>
+
+            <button type="button" id="table-view-button" class="view-toggle-button">
+                표로 보기
+            </button>
+        </div>
+
+        <div id="content" class="loading">
+            순위 데이터를 불러오는 중입니다.
+        </div>
+    </main>
+
+    <div id="hour-modal" class="hour-modal" aria-hidden="true">
+        <div class="hour-modal-backdrop" onclick="closeHourModal()"></div>
+
+        <section class="hour-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="hour-modal-title">
+            <div class="hour-modal-handle"></div>
+
+            <header class="hour-modal-header">
+                <div>
+                    <h2 id="hour-modal-title">시간대별 순위</h2>
+                    <p id="hour-modal-description"></p>
+                </div>
+
+                <button type="button" class="hour-modal-close" aria-label="닫기" onclick="closeHourModal()">
+                    ×
+                </button>
+            </header>
+
+            <div id="hour-modal-content" class="hour-modal-content"></div>
+        </section>
+    </div>
+
+
+    <div id="daily-modal" class="hour-modal daily-modal" aria-hidden="true">
+        <div class="hour-modal-backdrop" onclick="closeDailyModal()"></div>
+
+        <section class="hour-modal-sheet daily-modal-sheet" role="dialog" aria-modal="true"
+            aria-labelledby="daily-modal-title">
+            <div class="hour-modal-handle"></div>
+
+            <header class="hour-modal-header">
+                <div>
+                    <h2 id="daily-modal-title">
+                        일간 정보
+                    </h2>
+
+                    <p id="daily-modal-description"></p>
+                </div>
+
+                <button type="button" class="hour-modal-close" aria-label="닫기" onclick="closeDailyModal()">
+                    ×
+                </button>
+            </header>
+
+            <div id="daily-modal-content" class="daily-modal-content"></div>
+        </section>
+    </div>
+
+    <script src="./js/app.js"></script>
+</body>
+
+
+</html>

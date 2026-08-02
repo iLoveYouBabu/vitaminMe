@@ -1,0 +1,507 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 30px;
+    background: #f5f6f8;
+    color: #222;
+    font-family: Arial, "Noto Sans KR", sans-serif;
+}
+
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 30px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+    margin: 0 0 8px;
+}
+
+.artist {
+    margin-bottom: 25px;
+    color: #777;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+th,
+td {
+    min-width: 42px;
+    height: 42px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background: #f0f1f3;
+    font-size: 13px;
+}
+
+.date-cell {
+    min-width: 110px;
+    padding: 0 10px;
+    background: #fafafa;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.rank-cell {
+    font-weight: bold;
+}
+
+.rank-high {
+    background: #ccebd6;
+}
+
+.rank-middle {
+    background: #fff1b8;
+}
+
+.rank-low {
+    background: #ffd8bf;
+}
+
+.out {
+    background: #333;
+    color: white;
+}
+
+.loading,
+.error {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.loading {
+    background: #f3f5f7;
+}
+
+.error {
+    background: #fff0f0;
+    color: #c62828;
+        }
+
+        /* PC용 차트 */
+.desktop-chart {
+    display: block;
+}
+
+/* 모바일용 차트는 기본적으로 숨김 */
+.mobile-chart {
+    display: none;
+}
+
+/* 모바일 화면 */
+@media (max-width: 700px) {
+    body {
+        padding: 12px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 22px 14px;
+        border-radius: 14px;
+    }
+
+    h1 {
+        font-size: 32px;
+        margin-bottom: 6px;
+    }
+
+    .artist {
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    /* 기존 가로 표 숨김 */
+    .desktop-chart {
+        display: none;
+    }
+
+    /* 모바일 카드 표시 */
+    .mobile-chart {
+        display: block;
+    }
+
+    .day-card {
+        margin-bottom: 18px;
+        border: 1px solid #dddddd;
+        border-radius: 12px;
+        overflow: hidden;
+        background: white;
+    }
+
+    .day-title {
+        padding: 12px 14px;
+        background: #f3f4f6;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .mobile-hour-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .mobile-rank-cell {
+        min-width: 0;
+        height: 58px;
+        border-top: 1px solid #dddddd;
+        border-right: 1px solid #dddddd;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-rank-cell:nth-child(6n) {
+        border-right: none;
+    }
+
+    .mobile-hour {
+        margin-bottom: 3px;
+        color: #777777;
+        font-size: 10px;
+        font-weight: normal;
+    }
+
+    .mobile-rank {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .mobile-rank-cell.out .mobile-hour {
+        color: #cccccc;
+    }
+
+    .mobile-rank-cell.out .mobile-rank {
+        color: white;
+    }
+}
+
+
+
+
+/* 모바일 순위 셀을 버튼으로 사용 */
+button.mobile-rank-cell {
+    width: 100%;
+    padding: 0;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0;
+    color: inherit;
+    font-family: inherit;
+    cursor: pointer;
+    appearance: none;
+}
+
+button.mobile-rank-cell:active {
+    filter: brightness(0.94);
+}
+
+button.mobile-rank-cell:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid rgba(54, 112, 255, 0.45);
+    outline-offset: -3px;
+}
+
+
+/* 시간대 비교 모달 */
+.hour-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+}
+
+.hour-modal.open {
+    display: block;
+}
+
+.hour-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.hour-modal-sheet {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    max-height: 78vh;
+    padding: 10px 18px 24px;
+
+    background: white;
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
+
+    overflow-y: auto;
+    animation: modal-slide-up 0.22s ease-out;
+}
+
+.hour-modal-handle {
+    width: 42px;
+    height: 5px;
+    margin: 0 auto 14px;
+
+    background: #d3d5d8;
+    border-radius: 999px;
+}
+
+.hour-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+
+    margin-bottom: 16px;
+}
+
+.hour-modal-header h2 {
+    margin: 0 0 4px;
+    font-size: 22px;
+}
+
+.hour-modal-header p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.hour-modal-close {
+    width: 38px;
+    height: 38px;
+
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+
+    background: #f0f1f3;
+    color: #333;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.hour-rank-list {
+    border: 1px solid #e1e2e5;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.hour-rank-row {
+    display: grid;
+    grid-template-columns: 1fr 38px 70px;
+    align-items: center;
+    gap: 8px;
+
+    min-height: 52px;
+    padding: 8px 12px;
+
+    border-bottom: 1px solid #e1e2e5;
+}
+
+.hour-rank-row:last-child {
+    border-bottom: none;
+}
+
+.hour-rank-row.selected {
+    box-shadow: inset 4px 0 0 #333;
+}
+
+.hour-rank-place {
+    width: 28px;
+    height: 28px;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* 최고 기록 */
+.hour-rank-place.place-1 {
+    background: #ffd966;
+    color: #5f4800;
+}
+
+/* 두 번째 기록 */
+.hour-rank-place.place-2 {
+    background: #d9dde3;
+    color: #4a4f57;
+}
+
+/* 세 번째 기록 */
+.hour-rank-place.place-3 {
+    background: #e8bd91;
+    color: #67401f;
+}
+
+.hour-rank-date {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.hour-rank-value {
+    min-width: 58px;
+    padding: 7px 10px;
+
+    border-radius: 8px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.hour-rank-value.no-data {
+    background: #f0f1f3;
+    color: #999;
+}
+
+.hour-rank-value.out {
+    background: #333;
+    color: white;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.view-toggle {
+    display: none;
+    gap: 4px;
+    margin-bottom: 14px;
+    padding: 4px;
+    border-radius: 10px;
+    background: #eceef1;
+}
+
+.view-toggle-button {
+    flex: 1;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #666;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.view-toggle-button.active {
+    background: #fff;
+    color: #222;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+@keyframes modal-slide-up {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* PC에서는 가운데 작은 창으로 표시 */
+@media (min-width: 701px) {
+    .hour-modal-sheet {
+        top: 50%;
+        right: auto;
+        bottom: auto;
+        left: 50%;
+
+        width: min(440px, calc(100% - 40px));
+        max-height: 75vh;
+
+        border-radius: 18px;
+        transform: translate(-50%, -50%);
+        animation: none;
+    }
+}
+
+
+/* 화면 전환 버튼은 PC에서 숨김 */
+.view-toggle {
+    display: none;
+}
+
+/* 모바일 화면 */
+@media (max-width: 700px) {
+    .view-toggle {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 14px;
+        padding: 4px;
+        border-radius: 10px;
+        background: #eceef1;
+    }
+
+    .view-toggle-button {
+        flex: 1;
+        padding: 9px 12px;
+
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: #666;
+
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .view-toggle-button.active {
+        background: white;
+        color: #222;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    }
+
+    /* 카드 보기 */
+    body.card-view .desktop-chart {
+        display: none;
+    }
+
+    body.card-view .mobile-chart {
+        display: block;
+    }
+
+    /* 표 보기 */
+    body.table-view .desktop-chart {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body.table-view .mobile-chart {
+        display: none;
+    }
+
+    body.table-view .desktop-chart table {
+        min-width: 1100px;
+    }
+}
