@@ -26,12 +26,12 @@ REPO = "vitaminMe"
 BRANCH = "main"
 FILE_PATH = "docs/data/chart.json"
 
-# 한국 시간 14시 이후부터 일간 차트를 확인
-DAILY_CHECK_HOUR = 14
+# 한국 시간 13시 이후부터 일간 차트를 확인
+DAILY_CHECK_HOUR = 13
 
-# Railway가 01분, 06분, 11분...에 실행되므로
-# 이용자 수가 늦게 올라올 때 매시간 01분 실행에서 재확인
-LISTENER_CHECK_MINUTE_LIMIT = 5
+# Railway가 매시간 02분, 07분에 실행
+# 이용자 수가 아직 없으면 두 실행 모두 재확인
+LISTENER_CHECK_MINUTE_LIMIT = 8
 
 API_URL = (
     f"https://api.github.com/repos/"
